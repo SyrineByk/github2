@@ -1,0 +1,208 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" 
+	template="/templates/template.xhtml">
+	
+	
+	<ui:define name="content">
+		<h:form dir="ltr" id="categorieForm">
+			<!-- liste des Categorie -->
+			<center>
+			<p:dataTable id="categorieTable"
+				var="categorieVar" 
+				style="width:960px;"
+				value="#{categorieBean.categorieList}" 
+				widgetVar="categorieTable"
+				paginator="true" 
+				rows="4"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="4,8,12,16"
+				>
+				<f:facet name="header">
+					<p:outputPanel>
+						<h:outputText value="Recherche" dir="ltr"/>
+						<p:inputText id="globalFilter" onkeyup="categorieTable.filter()"
+							style="width:150px" />
+						<p:commandButton id="addButton"
+							update=":categorieForm:categoriePanelAdd"
+							oncomplete="categorieAdd.show()" 
+							icon="ui-icon-add"
+							value="Ajouter"
+							title="Ajouter Categorie">			
+						</p:commandButton>
+					</p:outputPanel>
+				</f:facet>
+				
+				<p:column id="libelle" filterBy="#{categorieVar.libelle}"
+					headerText="libelle" filterMatchMode="contains" 
+					sortBy="#{categorieVar.libelle}">
+					<f:facet name="header">  
+			            <h:outputText value="Libellé" />  
+			        </f:facet>
+					<h:outputText value="#{categorieVar.libelle}" />
+				</p:column>
+				
+				<p:column id="description" filterBy="#{categorieVar.description}"
+					headerText="description" filterMatchMode="contains" sortBy="#{categorieVar.description}">
+					<f:facet name="header">  
+			            <h:outputText value="Description" />  
+			        </f:facet>
+					<h:outputText value="#{categorieVar.description}" />
+				</p:column>
+				
+				<!-- les boutons consult + Update + Delete -->
+				<p:column style="width:10%" headerText="Actions" exportable="false">
+					<h:panelGrid columns="3">
+						<p:commandButton id="selectButton" style="size:12;"
+							update=":categorieForm:categoriePanelConsult"
+							oncomplete="categorieConsult.show()" 
+							value="Afficher"
+							title="Afficher">
+							<f:setPropertyActionListener value="#{categorieVar}"
+								target="#{categorieBean.selectedCategorieDisplay}" />
+						</p:commandButton>
+
+						<p:commandButton id="deleteButton" style="size:12;"
+							update=":categorieForm:categoriePanelRemove" 
+							oncomplete="categorieRemove.show()"
+							value="Supprimer" 
+							title="Supprimer">
+							<f:setPropertyActionListener value="#{categorieVar}"
+								target="#{categorieBean.selectedCategorieDelete}" />
+						</p:commandButton>
+
+						<p:commandButton id="updateButton" style="size:12;"
+							update=":categorieForm:categoriePanelUpdate" 
+							oncomplete="categorieUpdate.show()"
+							value="Modifier"
+							title="Modifier">
+							<f:setPropertyActionListener value="#{categorieVar}"
+								target="#{categorieBean.selectedCategorieUpdate}" />
+						</p:commandButton>
+						
+					</h:panelGrid>
+				</p:column>								
+			</p:dataTable>
+		</center>	
+		
+		<!-- Categorie Detail  -->
+			<p:dialog header="Afficher le détail de categorie" widgetVar="categorieConsult"
+				resizable="false" id="categorieConsult" showEffect="fade"
+				hideEffect="explode" modal="true">
+				<h:panelGrid columns="2" id="categoriePanelConsult">
+						
+				    <h:outputLabel value="Libellé :" />
+					<p:inputText id="libelle1" style="width:180px;"
+						value="#{categorieBean.selectedCategorieDisplay.libelle}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Description :" />
+					<p:inputText id="description1" style="width:180px;"
+						value="#{categorieBean.selectedCategorieDisplay.description}" disabled="true" readonly="true">
+					</p:inputText>
+									
+			</h:panelGrid>
+			</p:dialog> 
+			
+			<!-- Categorie remove -->
+			<p:dialog header="Supprimer" widgetVar="categorieRemove"
+				resizable="false" id="categorieRemove" showEffect="fade"
+				hideEffect="explode" modal="true">
+
+				<h:panelGrid columns="2" id="categoriePanelRemove">
+					<h:outputLabel value="Libellé :" />
+					<p:inputText id="libelle2" style="width:180px;"
+						value="#{categorieBean.selectedCategorieDelete.libelle}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Description :" />
+					<p:inputText id="description2" style="width:180px;"
+						value="#{categorieBean.selectedCategorieDelete.description}" disabled="true" readonly="true">
+					</p:inputText>
+					<f:facet name="footer">
+						<p:spacer height="50px;"></p:spacer>
+						<p:commandButton id="remove" value="Supprimer"
+							action="#{categorieBean.deleteCategorie}" categorie="submit"
+							oncomplete="categorieRemove.hide()" />
+						<p:commandButton value="Annuler"
+							oncomplete="categorieRemove.hide()" />
+					</f:facet>
+				</h:panelGrid>
+			</p:dialog>			
+
+			<!-- Categorie update -->
+			<p:dialog header="Mettre à jour" widgetVar="categorieUpdate"
+				resizable="false" id="categorieUpdate" showEffect="fade"
+				hideEffect="explode" modal="true">
+				<h:panelGrid columns="4" id="categoriePanelUpdate">
+
+					<h:outputLabel value="Libellé :" />
+					<p:inputText id="libelle3" style="width:180px;"
+						value="#{categorieBean.selectedCategorieUpdate.libelle}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Description :" />
+					<p:inputText id="description3" style="width:180px;"
+						value="#{categorieBean.selectedCategorieUpdate.description}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Type :" />
+					<p:selectOneMenu id="type3"
+						value="#{categorieBean.idTypeUpdate}"  filterMatchMode="contains" style="width:190px;">
+						<f:selectItem itemLabel="" itemValue=""/>
+						<f:selectItems  value="#{typeBean.typeList}"
+						var="type" itemLabel="#{type.libelle}" 	itemValue="#{type.idType}" />								
+					</p:selectOneMenu>
+				
+					<f:facet name="footer">
+						<p:spacer height="50px;"></p:spacer>
+						<p:commandButton id="update" value="Mettre à jour"
+							action="#{categorieBean.updateCategorie}" categorie="submit"
+							oncomplete="categorieUpdate.hide()" />
+						<p:commandButton value="Annuler"
+							oncomplete="categorieUpdate.hide()" />
+					</f:facet>
+				</h:panelGrid>
+			</p:dialog>	
+					
+			<!-- Categorie Add -->
+			<p:dialog header="Ajouter Categorie" widgetVar="categorieAdd"
+				resizable="false" id="categorieAdd" showEffect="fade"
+				hideEffect="explode" modal="true">
+				<h:panelGrid columns="4" id="categoriePanelAdd">
+					<h:outputLabel value="Libellé :" />
+					<p:inputText id="libelle4" style="width:180px;"
+						value="#{categorieBean.selectedCategorieAdd.libelle}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Description :" />
+					<p:inputText id="description4" style="width:180px;"
+						value="#{categorieBean.selectedCategorieAdd.description}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Type :" />
+					<p:selectOneMenu id="type4"
+						value="#{categorieBean.idTypeAdd}"  filterMatchMode="contains" style="width:190px;">
+						<f:selectItem itemLabel="" itemValue=""/>
+						<f:selectItems  value="#{typeBean.typeList}"
+						var="type" itemLabel="#{type.libelle}" 	itemValue="#{type.idType}" />								
+					</p:selectOneMenu>
+				
+					<f:facet name="footer">
+						<p:spacer height="50px;"></p:spacer>
+						
+						<p:commandButton id="add" value="Ajouter"
+							action="#{categorieBean.addCategorie}" categorie="submit"
+							oncomplete="categorieAdd.hide()" />
+						<p:commandButton value="Annuler" categorie="reset"
+							oncomplete="categorieAdd.hide()" />
+					</f:facet>
+					
+				</h:panelGrid>
+			</p:dialog>				
+			
+		</h:form>		
+	</ui:define>
+</ui:composition>

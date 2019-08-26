@@ -1,0 +1,77 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" 
+	template="/templates/template.xhtml">
+	
+	
+	<ui:define name="content">
+		<h:form dir="ltr" id="affectationForm">
+			<h:panelGrid columns="2" id="produitFournisseurPanel">
+			<h:outputLabel value="Fournisseur :" />
+			<p:selectOneMenu id="fournisseur" filter="true" 
+				value="#{vendreBean.idFournisseur}"  
+				filterMatchMode="contains" style="width:190px;"
+				update="fourProdList"				
+			>
+				<p:ajax listener="#{vendreBean.fournisseurAction()}" update="produit,vendreTable"/>
+				<f:selectItem itemLabel="" itemValue=""/>
+				<f:selectItems  value="#{fournisseurBean.fournisseurList}" 
+				var="fournisseur" itemLabel="#{fournisseur.nom}" 	itemValue="#{fournisseur.idFournisseur}" />								
+			</p:selectOneMenu>	
+			 
+			<h:outputLabel value="Produit :" />
+				<p:selectOneMenu id="produit" filter="true"
+					value="#{vendreBean.idProduit}"  filterMatchMode="contains" style="width:190px;">
+					<f:selectItem itemLabel="" itemValue=""/>
+					<f:selectItems  value="#{produitBean.produitList}"
+					var="prod" itemLabel="#{prod.libelle}" 	itemValue="#{prod.idProduit}" />								
+				</p:selectOneMenu>
+				<h:outputLabel value="Prix :" />
+				<p:inputText id="prix" style="width:180px;"
+					value="#{vendreBean.prix}" >
+				</p:inputText>	
+				<p:commandButton id="addButton"					
+					value="Ajouter"
+					title="Ajouter produit"
+					action="#{vendreBean.addVendre}"
+					type="submit"					
+				>	
+				<p:ajax update="vendreTable"/>
+				</p:commandButton>
+			</h:panelGrid>
+			<p:dataTable id="vendreTable"
+				var="vendreVar" 
+				style="width:960px;"
+				value="#{vendreBean.fournisseurProduitList}" 
+				widgetVar="vendreTable"
+				paginator="true" 
+				rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="10,20,30,40"
+				>
+				
+				<p:column id="produit" filterBy="#{vendreVar.produit.libelle}"
+					headerText="produit" filterMatchMode="contains" 
+					sortBy="#{vendreVar.produit.libelle}">
+					<f:facet name="header">  
+			            <h:outputText value="Produit" />  
+			        </f:facet>
+					<h:outputText value="#{vendreVar.produit.libelle}" />
+				</p:column>
+				
+				<p:column id="prix" filterBy="#{vendreVar.prix}"
+					headerText="prix" filterMatchMode="contains" sortBy="#{vendreVar.prix}">
+					<f:facet name="header">  
+			            <h:outputText value="Prix" />  
+			        </f:facet>
+					<h:outputText value="#{vendreVar.prix}" />
+				</p:column>		
+							
+			</p:dataTable>
+				
+			
+		</h:form>		
+	</ui:define>
+</ui:composition>

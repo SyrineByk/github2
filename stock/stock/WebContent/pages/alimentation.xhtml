@@ -1,0 +1,263 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" 
+	template="/templates/template.xhtml">
+	
+	
+	<ui:define name="content">
+		<h:form dir="ltr" id="alimentationForm">
+			<p:commandButton id="addButton"
+				update=":alimentationForm:alimentationPanelAdd"
+				oncomplete="alimentationAdd.show()" 
+				icon="ui-icon-add"
+				value="Ajouter"
+				title="Ajouter Alimentation">			
+			</p:commandButton>
+						
+			<!-- liste des Alimentation -->
+			<center>
+			<p:dataTable id="alimentationTable"
+				var="alimentationVar" 
+				style="width:960px;"
+				value="#{alimentationBean.alimentationList}" 
+				widgetVar="alimentationTable"
+				paginator="true" 
+				rows="4"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="4,8,12,16"
+				>
+				<f:facet name="header">
+					<p:outputPanel>
+						<h:outputText value="Recherche" />
+						<p:inputText id="globalFilter" onkeyup="alimentationTable.filter()"
+							style="width:150px" />
+					</p:outputPanel>
+				</f:facet>
+				
+				<p:column id="libelle" filterBy="#{alimentationVar.libelle}"
+					headerText="libelle" filterMatchMode="contains" 
+					sortBy="#{alimentationVar.libelle}">
+					<f:facet name="header">  
+			            <h:outputText value="Libellé" />  
+			        </f:facet>
+					<h:outputText value="#{alimentationVar.libelle}" />
+				</p:column>
+				
+				<p:column id="prix" filterBy="#{alimentationVar.prix}"
+					headerText="prix" filterMatchMode="contains" sortBy="#{alimentationVar.prix}">
+					<f:facet name="header">  
+			            <h:outputText value="Prix" />  
+			        </f:facet>
+					<h:outputText value="#{alimentationVar.prix}" />
+				</p:column>
+				
+				<p:column id="stock" filterBy="#{alimentationVar.stock}"
+					headerText="stock" filterMatchMode="contains" sortBy="#{alimentationVar.stock}">
+					<f:facet name="header">  
+			            <h:outputText value="Stock" />  
+			        </f:facet>
+					<h:outputText value="#{alimentationVar.stock}" />
+				</p:column>
+				
+				<!-- les boutons consult + Update + Delete -->
+				<p:column style="width:10%" headerText="Actions" exportable="false">
+					<h:panelGrid columns="3">
+						
+						<p:commandButton id="selectButton"
+							update=":alimentationForm:alimentationPanelConsult"
+							oncomplete="alimentationConsult.show()" 
+							icon="ui-icon-search"
+							title="Afficher">
+							<f:setPropertyActionListener value="#{alimentationVar}"
+								target="#{alimentationBean.selectedAlimentationDisplay}" />
+						</p:commandButton>
+
+						<p:commandButton id="deleteButton"
+							update=":alimentationForm:alimentationPanelRemove" 
+							oncomplete="alimentationRemove.show()"
+							icon="ui-icon-close" 
+							title="Supprimer">
+							<f:setPropertyActionListener value="#{alimentationVar}"
+								target="#{alimentationBean.selectedAlimentationDelete}" />
+						</p:commandButton>
+
+						<p:commandButton id="updateButton"
+							update=":alimentationForm:alimentationPanelUpdate" 
+							oncomplete="alimentationUpdate.show()"
+							icon="ui-icon-pencil" 
+							title="Mettre à jour">
+							<f:setPropertyActionListener value="#{alimentationVar}"
+								target="#{alimentationBean.selectedAlimentationUpdate}" />
+						</p:commandButton>
+						
+					</h:panelGrid>
+				</p:column>								
+			</p:dataTable>
+		</center>	
+		
+		<!-- Alimentation Detail  -->
+			<p:dialog header="Afficher le détail de alimentation" widgetVar="alimentationConsult"
+				resizable="false" id="alimentationConsult" showEffect="fade"
+				hideEffect="explode" modal="true">
+				<h:panelGrid columns="2" id="alimentationPanelConsult">
+						
+				    <h:outputLabel value="Libellé :" />
+					<p:inputText id="libelle1"
+						value="#{alimentationBean.selectedAlimentationDisplay.libelle}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Prix :" />
+					<p:inputText id="prix1"
+						value="#{alimentationBean.selectedAlimentationDisplay.prix}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Stock :" />
+					<p:inputText id="stock1"
+						value="#{alimentationBean.selectedAlimentationDisplay.stock}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Description :" />
+					<p:inputText id="description1"
+						value="#{alimentationBean.selectedAlimentationDisplay.description}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Unité :" />
+					<p:inputText id="unite1"
+						value="#{alimentationBean.selectedAlimentationDisplay.unite}" disabled="true" readonly="true">
+					</p:inputText>
+									
+			</h:panelGrid>
+			</p:dialog> 
+			
+			<!-- Alimentation remove -->
+			<p:dialog header="Supprimer" widgetVar="alimentationRemove"
+				resizable="false" id="alimentationRemove" showEffect="fade"
+				hideEffect="explode" modal="true">
+
+				<h:panelGrid columns="2" id="alimentationPanelRemove">
+					<h:outputLabel value="Libellé :" />
+					<p:inputText id="libelle2"
+						value="#{alimentationBean.selectedAlimentationDelete.libelle}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Prix :" />
+					<p:inputText id="prix2"
+						value="#{alimentationBean.selectedAlimentationDelete.prix}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Stock :" />
+					<p:inputText id="stock2"
+						value="#{alimentationBean.selectedAlimentationDelete.stock}" disabled="true" readonly="true">
+					</p:inputText>
+										
+					<f:facet name="footer">
+						<p:spacer height="50px;"></p:spacer>
+						<p:commandButton id="remove" value="Supprimer"
+							action="#{alimentationBean.deleteAlimentation}" type="submit"
+							oncomplete="alimentationRemove.hide()" />
+						<p:commandButton value="Annuler"
+							oncomplete="alimentationRemove.hide()" />
+					</f:facet>
+				</h:panelGrid>
+			</p:dialog>			
+
+			<!-- Alimentation update -->
+			<p:dialog header="Mettre à jour" widgetVar="alimentationUpdate"
+				resizable="false" id="alimentationUpdate" showEffect="fade"
+				hideEffect="explode" modal="true">
+				<h:panelGrid columns="2" id="alimentationPanelUpdate">
+
+					<h:outputLabel value="Libellé :" />
+					<p:inputText id="libelle3"
+						value="#{alimentationBean.selectedAlimentationUpdate.libelle}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Prix :" />
+					<p:inputText id="prix3"
+						value="#{alimentationBean.selectedAlimentationUpdate.prix}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Stock :" />
+					<p:inputText id="stock3"
+						value="#{alimentationBean.selectedAlimentationUpdate.stock}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Description :" />
+					<p:inputText id="description3"
+						value="#{alimentationBean.selectedAlimentationUpdate.description}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Unité :" />
+					<p:inputText id="unite3"
+						value="#{alimentationBean.selectedAlimentationUpdate.unite}" >
+					</p:inputText>
+					
+					<f:facet name="footer">
+						<p:spacer height="50px;"></p:spacer>
+						<p:commandButton id="update" value="Mettre à jour"
+							action="#{alimentationBean.updateAlimentation}" type="submit"
+							oncomplete="alimentationUpdate.hide()" />
+						<p:commandButton value="Annuler"
+							oncomplete="alimentationUpdate.hide()" />
+					</f:facet>
+				</h:panelGrid>
+			</p:dialog>	
+					
+			<!-- Alimentation Add -->
+			<p:dialog header="Ajouter Alimentation" widgetVar="alimentationAdd"
+				resizable="false" id="alimentationAdd" showEffect="fade"
+				hideEffect="explode" modal="true">
+				<h:panelGrid columns="2" id="alimentationPanelAdd">
+					
+					<p:outputLabel for="categorie4" value="Catégorie : " />
+			        <p:selectOneMenu id="categorie4" filter="true" filterMatchMode="contains"
+						value="#{alimentationBean.idCategorie}" style="width:208px;">
+						<f:selectItem itemLabel=""  itemValue=""/>
+						<f:selectItems value="#{categorieBean.alimentationCategorieList}"
+							var="categorie" itemLabel="#{categorie.libelle}"
+							itemValue="#{categorie.idCategorie}"  />									
+					</p:selectOneMenu>
+					
+					<h:outputLabel value="Libellé :" />
+					<p:inputText id="libelle4"
+						value="#{alimentationBean.selectedAlimentationAdd.libelle}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Prix :" />
+					<p:inputText id="prix4"
+						value="#{alimentationBean.selectedAlimentationAdd.prix}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Stock :" />
+					<p:inputText id="stock4"
+						value="#{alimentationBean.selectedAlimentationAdd.stock}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Description :" />
+					<p:inputText id="description4"
+						value="#{alimentationBean.selectedAlimentationAdd.description}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Unité :" />
+					<p:inputText id="unite4"
+						value="#{alimentationBean.selectedAlimentationAdd.unite}">
+					</p:inputText>
+					
+					<f:facet name="footer">
+						<p:spacer height="50px;"></p:spacer>
+						
+						<p:commandButton id="add" value="Ajouter"
+							action="#{alimentationBean.addAlimentation}" type="submit"
+							oncomplete="alimentationAdd.hide()" />
+						<p:commandButton value="Annuler" type="reset"
+							oncomplete="alimentationAdd.hide()" />
+					</f:facet>
+					
+				</h:panelGrid>
+			</p:dialog>				
+			
+		</h:form>		
+	</ui:define>
+</ui:composition>

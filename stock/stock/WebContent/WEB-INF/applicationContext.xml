@@ -1,0 +1,156 @@
+<beans  xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+				http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+				http://www.springframework.org/schema/tx 
+		        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		        http://www.springframework.org/schema/aop
+		        http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		        http://www.springframework.org/schema/context 
+		        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		        ">
+
+	<!-- Data Source Declaration -->
+	<bean id="DataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+		<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/stock" />
+		<property name="user" value="root" />
+		<property name="password" value="" />
+		<property name="maxPoolSize" value="10" />
+		<property name="maxStatements" value="0" />
+		<property name="minPoolSize" value="5" />
+	</bean>
+	
+	<!-- Beans Declaration -->
+	<bean id="Categorie" class="com.cni.stock.model.Categorie" />
+	<bean id="Commande" class="com.cni.stock.model.Commande" />
+	<bean id="Facture" class="com.cni.stock.model.Facture" />
+	<bean id="Fournisseur" class="com.cni.stock.model.Fournisseur" />
+	<bean id="Invite" class="com.cni.stock.model.Invite" />
+	<bean id="LigneCommande" class="com.cni.stock.model.LigneCommande" />
+	<bean id="Parametre" class="com.cni.stock.model.Parametre" />
+	<bean id="Produit" class="com.cni.stock.model.Produit" />
+	<bean id="Type" class="com.cni.stock.model.Type" />
+	<bean id="Unite" class="com.cni.stock.model.Unite" />
+	<bean id="Utilisateur" class="com.cni.stock.model.Utilisateur" />
+	<bean id="Vendre" class="com.cni.stock.model.Vendre" />
+	
+	<!--  Service Declaration  -->
+	<bean id="CategorieService" class="com.cni.stock.service.CategorieService">
+		<property name="categorieDAO" ref="CategorieDAO" />
+	</bean>
+	<bean id="CommandeService" class="com.cni.stock.service.CommandeService">
+		<property name="commandeDAO" ref="CommandeDAO" />
+	</bean>
+	<bean id="FactureService" class="com.cni.stock.service.FactureService">
+		<property name="factureDAO" ref="FactureDAO" />
+	</bean>
+	<bean id="FournisseurService" class="com.cni.stock.service.FournisseurService">
+		<property name="fournisseurDAO" ref="FournisseurDAO" />
+	</bean>	
+	<bean id="InviteService" class="com.cni.stock.service.InviteService">
+		<property name="inviteDAO" ref="InviteDAO" />
+	</bean>
+	<bean id="LigneCommandeService" class="com.cni.stock.service.LigneCommandeService">
+		<property name="ligneCommandeDAO" ref="LigneCommandeDAO" />
+	</bean>
+	<bean id="ParametreService" class="com.cni.stock.service.ParametreService">
+		<property name="parametreDAO" ref="ParametreDAO" />
+	</bean>
+	<bean id="ProduitService" class="com.cni.stock.service.ProduitService">
+		<property name="produitDAO" ref="ProduitDAO" />
+	</bean>
+	<bean id="TypeService" class="com.cni.stock.service.TypeService">
+		<property name="typeDAO" ref="TypeDAO" />
+	</bean>
+	<bean id="UniteService" class="com.cni.stock.service.UniteService">
+		<property name="uniteDAO" ref="UniteDAO" />
+	</bean>
+	<bean id="UtilisateurService" class="com.cni.stock.service.UtilisateurService">
+		<property name="utilisateurDAO" ref="UtilisateurDAO" />
+	</bean>
+	<bean id="VendreService" class="com.cni.stock.service.VendreService">
+		<property name="vendreDAO" ref="VendreDAO" />
+	</bean>
+	
+	<!-- DAOs Declaration -->
+	<bean id="CategorieDAO" class="com.cni.stock.dao.CategorieDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="CommandeDAO" class="com.cni.stock.dao.CommandeDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="FactureDAO" class="com.cni.stock.dao.FactureDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="FournisseurDAO" class="com.cni.stock.dao.FournisseurDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="InviteDAO" class="com.cni.stock.dao.InviteDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="LigneCommandeDAO" class="com.cni.stock.dao.LigneCommandeDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="ParametreDAO" class="com.cni.stock.dao.ParametreDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="ProduitDAO" class="com.cni.stock.dao.ProduitDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="TypeDAO" class="com.cni.stock.dao.TypeDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="UniteDAO" class="com.cni.stock.dao.UniteDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="UtilisateurDAO" class="com.cni.stock.dao.UtilisateurDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="VendreDAO" class="com.cni.stock.dao.VendreDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	
+	<!-- Session Factory Declaration -->
+	<bean id="SessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="DataSource" />
+		<property name="annotatedClasses">
+			<list>
+				<value>com.cni.stock.model.Categorie</value>
+				<value>com.cni.stock.model.Commande</value>
+				<value>com.cni.stock.model.Facture</value>
+				<value>com.cni.stock.model.Fournisseur</value>
+				<value>com.cni.stock.model.Invite</value>
+				<value>com.cni.stock.model.LigneCommande</value>
+				<value>com.cni.stock.model.Parametre</value>
+				<value>com.cni.stock.model.Produit</value>
+				<value>com.cni.stock.model.Type</value>
+				<value>com.cni.stock.model.Unite</value>
+				<value>com.cni.stock.model.Utilisateur</value>
+				<value>com.cni.stock.model.Vendre</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<!-- prop key="hibernate.hbm2ddl.auto">create</prop -->
+			</props>
+		</property>
+	</bean>
+
+	<!-- Enable the configuration of transactional behavior based on annotations -->
+	<tx:annotation-driven transaction-manager="txManager" />
+
+	<!-- Transaction Manager is defined -->
+	<bean id="txManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	
+</beans>

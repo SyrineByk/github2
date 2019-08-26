@@ -1,0 +1,191 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" 
+	template="/templates/template.xhtml">
+	
+	
+	<ui:define name="content">
+		<h:form dir="ltr" id="uniteForm">
+			<!-- liste des Unite -->
+			<center>
+			<p:dataTable id="uniteTable"
+				var="uniteVar" 
+				style="width:960px;"
+				value="#{uniteBean.uniteList}" 
+				widgetVar="uniteTable"
+				paginator="true" 
+				rows="4"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="4,8,12,16"
+				>
+				<f:facet name="header">
+					<p:outputPanel>
+						<h:outputText value="Recherche" dir="ltr"/>
+						<p:inputText id="globalFilter" onkeyup="uniteTable.filter()"
+							style="width:150px" />
+						<p:commandButton id="addButton"
+							update=":uniteForm:unitePanelAdd"
+							oncomplete="uniteAdd.show()" 
+							icon="ui-icon-add"
+							value="Ajouter"
+							title="Ajouter Unite">			
+						</p:commandButton>
+					</p:outputPanel>
+				</f:facet>
+				
+				<p:column id="libelle" filterBy="#{uniteVar.libelle}"
+					headerText="libelle" filterMatchMode="contains" 
+					sortBy="#{uniteVar.libelle}">
+					<f:facet name="header">  
+			            <h:outputText value="Libellé" />  
+			        </f:facet>
+					<h:outputText value="#{uniteVar.libelle}" />
+				</p:column>
+				
+				<p:column id="description" filterBy="#{uniteVar.description}"
+					headerText="description" filterMatchMode="contains" sortBy="#{uniteVar.description}">
+					<f:facet name="header">  
+			            <h:outputText value="Description" />  
+			        </f:facet>
+					<h:outputText value="#{uniteVar.description}" />
+				</p:column>
+				
+				<!-- les boutons consult + Update + Delete -->
+				<p:column style="width:10%" headerText="Actions" exportable="false">
+					<h:panelGrid columns="3">
+						<p:commandButton id="selectButton" style="size:12;"
+							update=":uniteForm:unitePanelConsult"
+							oncomplete="uniteConsult.show()" 
+							value="Afficher"
+							title="Afficher">
+							<f:setPropertyActionListener value="#{uniteVar}"
+								target="#{uniteBean.selectedUniteDisplay}" />
+						</p:commandButton>
+
+						<p:commandButton id="deleteButton" style="size:12;"
+							update=":uniteForm:unitePanelRemove" 
+							oncomplete="uniteRemove.show()"
+							value="Supprimer" 
+							title="Supprimer">
+							<f:setPropertyActionListener value="#{uniteVar}"
+								target="#{uniteBean.selectedUniteDelete}" />
+						</p:commandButton>
+
+						<p:commandButton id="updateButton" style="size:12;"
+							update=":uniteForm:unitePanelUpdate" 
+							oncomplete="uniteUpdate.show()"
+							value="Modifier"
+							title="Modifier">
+							<f:setPropertyActionListener value="#{uniteVar}"
+								target="#{uniteBean.selectedUniteUpdate}" />
+						</p:commandButton>
+						
+					</h:panelGrid>
+				</p:column>								
+			</p:dataTable>
+		</center>	
+		
+		<!-- Unite Detail  -->
+			<p:dialog header="Afficher le détail de unite" widgetVar="uniteConsult"
+				resizable="false" id="uniteConsult" showEffect="fade"
+				hideEffect="explode" modal="true">
+				<h:panelGrid columns="2" id="unitePanelConsult">
+						
+				    <h:outputLabel value="Libellé :" />
+					<p:inputText id="libelle1" style="width:180px;"
+						value="#{uniteBean.selectedUniteDisplay.libelle}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Description :" />
+					<p:inputText id="description1" style="width:180px;"
+						value="#{uniteBean.selectedUniteDisplay.description}" disabled="true" readonly="true">
+					</p:inputText>
+									
+			</h:panelGrid>
+			</p:dialog> 
+			
+			<!-- Unite remove -->
+			<p:dialog header="Supprimer" widgetVar="uniteRemove"
+				resizable="false" id="uniteRemove" showEffect="fade"
+				hideEffect="explode" modal="true">
+
+				<h:panelGrid columns="2" id="unitePanelRemove">
+					<h:outputLabel value="Libellé :" />
+					<p:inputText id="libelle2" style="width:180px;"
+						value="#{uniteBean.selectedUniteDelete.libelle}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Description :" />
+					<p:inputText id="description2" style="width:180px;"
+						value="#{uniteBean.selectedUniteDelete.description}" disabled="true" readonly="true">
+					</p:inputText>
+					<f:facet name="footer">
+						<p:spacer height="50px;"></p:spacer>
+						<p:commandButton id="remove" value="Supprimer"
+							action="#{uniteBean.deleteUnite}" type="submit"
+							oncomplete="uniteRemove.hide()" />
+						<p:commandButton value="Annuler"
+							oncomplete="uniteRemove.hide()" />
+					</f:facet>
+				</h:panelGrid>
+			</p:dialog>			
+
+			<!-- Unite update -->
+			<p:dialog header="Mettre à jour" widgetVar="uniteUpdate"
+				resizable="false" id="uniteUpdate" showEffect="fade"
+				hideEffect="explode" modal="true">
+				<h:panelGrid columns="4" id="unitePanelUpdate">
+
+					<h:outputLabel value="Libellé :" />
+					<p:inputText id="libelle3" style="width:180px;"
+						value="#{uniteBean.selectedUniteUpdate.libelle}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Description :" />
+					<p:inputText id="description3" style="width:180px;"
+						value="#{uniteBean.selectedUniteUpdate.description}" >
+					</p:inputText>
+					<f:facet name="footer">
+						<p:spacer height="50px;"></p:spacer>
+						<p:commandButton id="update" value="Mettre à jour"
+							action="#{uniteBean.updateUnite}" type="submit"
+							oncomplete="uniteUpdate.hide()" />
+						<p:commandButton value="Annuler"
+							oncomplete="uniteUpdate.hide()" />
+					</f:facet>
+				</h:panelGrid>
+			</p:dialog>	
+					
+			<!-- Unite Add -->
+			<p:dialog header="Ajouter Unite" widgetVar="uniteAdd"
+				resizable="false" id="uniteAdd" showEffect="fade"
+				hideEffect="explode" modal="true">
+				<h:panelGrid columns="4" id="unitePanelAdd">
+					<h:outputLabel value="Libellé :" />
+					<p:inputText id="libelle4" style="width:180px;"
+						value="#{uniteBean.selectedUniteAdd.libelle}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Description :" />
+					<p:inputText id="description4" style="width:180px;"
+						value="#{uniteBean.selectedUniteAdd.description}" >
+					</p:inputText>
+					
+					<f:facet name="footer">
+						<p:spacer height="50px;"></p:spacer>
+						
+						<p:commandButton id="add" value="Ajouter"
+							action="#{uniteBean.addUnite}" type="submit"
+							oncomplete="uniteAdd.hide()" />
+						<p:commandButton value="Annuler" type="reset"
+							oncomplete="uniteAdd.hide()" />
+					</f:facet>
+					
+				</h:panelGrid>
+			</p:dialog>				
+			
+		</h:form>		
+	</ui:define>
+</ui:composition>

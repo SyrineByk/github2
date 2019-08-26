@@ -1,0 +1,276 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" 
+	template="/templates/template.xhtml">
+	
+	
+	<ui:define name="content">
+		<h:form dir="ltr" id="fournisseurForm">
+			<!-- liste des Fournisseur -->
+			<center>
+			<p:dataTable id="fournisseurTable"
+				var="fournisseurVar" 
+				style="width:960px;"
+				value="#{fournisseurBean.fournisseurList}" 
+				widgetVar="fournisseurTable"
+				paginator="true" 
+				rows="4"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="4,8,12,16"
+				>
+				<f:facet name="header">
+					<p:outputPanel>
+						<h:outputText value="Recherche" dir="ltr"/>
+						<p:inputText id="globalFilter" onkeyup="fournisseurTable.filter()"
+							style="width:150px" />
+						<p:commandButton id="addButton"
+							update=":fournisseurForm:fournisseurPanelAdd"
+							oncomplete="fournisseurAdd.show()" 
+							icon="ui-icon-add"
+							value="Ajouter"
+							title="Ajouter Fournisseur">			
+						</p:commandButton>
+					</p:outputPanel>
+				</f:facet>
+				
+				<p:column id="nom" filterBy="#{fournisseurVar.nom}"
+					headerText="nom" filterMatchMode="contains" 
+					sortBy="#{fournisseurVar.nom}">
+					<f:facet name="header">  
+			            <h:outputText value="Nom" />  
+			        </f:facet>
+					<h:outputText value="#{fournisseurVar.nom}" />
+				</p:column>
+				
+				<p:column id="prenom" filterBy="#{fournisseurVar.prenom}"
+					headerText="prenom" filterMatchMode="contains" sortBy="#{fournisseurVar.prenom}">
+					<f:facet name="header">  
+			            <h:outputText value="Prénom" />  
+			        </f:facet>
+					<h:outputText value="#{fournisseurVar.prenom}" />
+				</p:column>
+				
+				<!-- les boutons consult + Update + Delete -->
+				<p:column style="width:10%" headerText="Actions" exportable="false">
+					<h:panelGrid columns="3">
+						<p:commandButton id="selectButton" style="size:12;"
+							update=":fournisseurForm:fournisseurPanelConsult"
+							oncomplete="fournisseurConsult.show()" 
+							value="Afficher"
+							title="Afficher">
+							<f:setPropertyActionListener value="#{fournisseurVar}"
+								target="#{fournisseurBean.selectedFournisseurDisplay}" />
+						</p:commandButton>
+
+						<p:commandButton id="deleteButton" style="size:12;"
+							update=":fournisseurForm:fournisseurPanelRemove" 
+							oncomplete="fournisseurRemove.show()"
+							value="Supprimer" 
+							title="Supprimer">
+							<f:setPropertyActionListener value="#{fournisseurVar}"
+								target="#{fournisseurBean.selectedFournisseurDelete}" />
+						</p:commandButton>
+
+						<p:commandButton id="updateButton" style="size:12;"
+							update=":fournisseurForm:fournisseurPanelUpdate" 
+							oncomplete="fournisseurUpdate.show()"
+							value="Modifier"
+							title="Modifier">
+							<f:setPropertyActionListener value="#{fournisseurVar}"
+								target="#{fournisseurBean.selectedFournisseurUpdate}" />
+						</p:commandButton>
+						
+					</h:panelGrid>
+				</p:column>								
+			</p:dataTable>
+		</center>	
+		
+		<!-- Fournisseur Detail  -->
+			<p:dialog header="Afficher le détail de fournisseur" widgetVar="fournisseurConsult"
+				resizable="false" id="fournisseurConsult" showEffect="fade"
+				hideEffect="explode" modal="true">
+				<h:panelGrid columns="2" id="fournisseurPanelConsult">
+						
+				    <h:outputLabel value="Nom :" />
+					<p:inputText id="nom1" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurDisplay.nom}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Prénom :" />
+					<p:inputText id="prenom1" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurDisplay.prenom}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Adresse :" />
+					<p:inputText id="adresse1" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurDisplay.adresse}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Description :" />
+					<p:inputText id="description1" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurDisplay.description}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Téléphone 1 :" />
+					<p:inputText id="telephone11" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurDisplay.telephone1}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Téléphone 2 :" />
+					<p:inputText id="telephone21" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurDisplay.telephone2}" disabled="true" readonly="true">
+					</p:inputText>
+									
+			</h:panelGrid>
+			</p:dialog> 
+			
+			<!-- Fournisseur remove -->
+			<p:dialog header="Supprimer" widgetVar="fournisseurRemove"
+				resizable="false" id="fournisseurRemove" showEffect="fade"
+				hideEffect="explode" modal="true">
+
+				<h:panelGrid columns="2" id="fournisseurPanelRemove">
+					<h:outputLabel value="Nom :" />
+					<p:inputText id="nom2" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurDelete.nom}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Prénom :" />
+					<p:inputText id="prenom2" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurDelete.prenom}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Adresse :" />
+					<p:inputText id="adresse2" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurDelete.adresse}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Description :" />
+					<p:inputText id="description2" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurDelete.description}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Téléphone 1 :" />
+					<p:inputText id="telephone12" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurDelete.telephone1}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Téléphone 2 :" />
+					<p:inputText id="telephone22" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurDelete.telephone2}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<f:facet name="footer">
+						<p:spacer height="50px;"></p:spacer>
+						<p:commandButton id="remove" value="Supprimer"
+							action="#{fournisseurBean.deleteFournisseur}" type="submit"
+							oncomplete="fournisseurRemove.hide()" />
+						<p:commandButton value="Annuler"
+							oncomplete="fournisseurRemove.hide()" />
+					</f:facet>
+				</h:panelGrid>
+			</p:dialog>			
+
+			<!-- Fournisseur update -->
+			<p:dialog header="Mettre à jour" widgetVar="fournisseurUpdate"
+				resizable="false" id="fournisseurUpdate" showEffect="fade"
+				hideEffect="explode" modal="true">
+				<h:panelGrid columns="4" id="fournisseurPanelUpdate">
+
+					<h:outputLabel value="Nom :" />
+					<p:inputText id="nom3" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurUpdate.nom}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Prénom :" />
+					<p:inputText id="prenom3" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurUpdate.prenom}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Adresse :" />
+					<p:inputText id="adresse3" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurUpdate.adresse}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Description :" />
+					<p:inputText id="description3" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurUpdate.description}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Téléphone 1 :" />
+					<p:inputText id="telephone13" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurUpdate.telephone1}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Téléphone 2 :" />
+					<p:inputText id="telephone23" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurUpdate.telephone2}" >
+					</p:inputText>
+					
+					
+					<f:facet name="footer">
+						<p:spacer height="50px;"></p:spacer>
+						<p:commandButton id="update" value="Mettre à jour"
+							action="#{fournisseurBean.updateFournisseur}" type="submit"
+							oncomplete="fournisseurUpdate.hide()" />
+						<p:commandButton value="Annuler"
+							oncomplete="fournisseurUpdate.hide()" />
+					</f:facet>
+				</h:panelGrid>
+			</p:dialog>	
+					
+			<!-- Fournisseur Add -->
+			<p:dialog header="Ajouter Fournisseur" widgetVar="fournisseurAdd"
+				resizable="false" id="fournisseurAdd" showEffect="fade"
+				hideEffect="explode" modal="true">
+				<h:panelGrid columns="4" id="fournisseurPanelAdd">
+
+					<h:outputLabel value="Nom :" />
+					<p:inputText id="nom4" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurAdd.nom}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Prénom :" />
+					<p:inputText id="prenom4" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurAdd.prenom}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Adresse :" />
+					<p:inputText id="adresse4" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurAdd.adresse}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Description :" />
+					<p:inputText id="description4" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurAdd.description}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Téléphone 1 :" />
+					<p:inputText id="telephone14" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurAdd.telephone1}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Téléphone 2 :" />
+					<p:inputText id="telephone24" style="width:180px;"
+						value="#{fournisseurBean.selectedFournisseurAdd.telephone2}" >
+					</p:inputText>
+					
+					
+					<f:facet name="footer">
+						<p:spacer height="50px;"></p:spacer>
+						
+						<p:commandButton id="add" value="Ajouter"
+							action="#{fournisseurBean.addFournisseur}" type="submit"
+							oncomplete="fournisseurAdd.hide()" />
+						<p:commandButton value="Annuler" type="reset"
+							oncomplete="fournisseurAdd.hide()" />
+					</f:facet>
+					
+				</h:panelGrid>
+			</p:dialog>				
+			
+		</h:form>		
+	</ui:define>
+</ui:composition>

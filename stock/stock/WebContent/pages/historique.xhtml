@@ -1,0 +1,76 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" 
+	template="/templates/template.xhtml">
+	
+	
+	<ui:define name="content">
+		<h:form dir="ltr" id="inviteForm">
+			<!-- liste des Invite -->
+			<center>
+			<p:dataTable id="ligneCommandeTable" var="ligneCommandeVar"
+						style="width:930px;"
+						value="#{ligneCommandeBean.ligneCommandeList}"
+						widgetVar="ligneCommandeTable" paginator="true" rows="4"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="4,8,12,16">
+						<f:facet name="header">
+							<p:outputPanel>
+								<h:outputText value="Recherche" dir="ltr" />
+								<p:inputText id="globalFilter"
+									onkeyup="ligneCommandeTable.filter()" style="width:150px" />
+							</p:outputPanel>
+						</f:facet>
+
+						<p:column id="date" filterBy="#{ligneCommandeVar.commande.jour}"
+							headerText="date" filterMatchMode="contains"
+							sortBy="#{ligneCommandeVar.commande.jour}">
+							<f:facet name="header">
+								<h:outputText value="Date" />
+							</f:facet>
+							<h:outputText value="#{ligneCommandeVar.commande.jour}" />
+						</p:column>
+						
+						<p:column id="type" filterBy="#{ligneCommandeVar.commande.type}"
+							headerText="type" filterMatchMode="contains"
+							sortBy="#{ligneCommandeVar.commande.type}">
+							<f:facet name="header">
+								<h:outputText value="Type" />
+							</f:facet>
+							<h:outputText value="#{ligneCommandeVar.commande.type}" />
+						</p:column>
+						
+						<p:column id="produit" filterBy="#{ligneCommandeVar.produit.libelle}"
+							headerText="produit" filterMatchMode="contains"
+							sortBy="#{ligneCommandeVar.produit.libelle}">
+							<f:facet name="header">
+								<h:outputText value="Produit" />
+							</f:facet>
+							<h:outputText value="#{ligneCommandeVar.produit.libelle}" />
+						</p:column>
+						
+						<p:column id="quantite" filterBy="#{ligneCommandeVar.quantite}"
+							headerText="quantite" filterMatchMode="contains"
+							sortBy="#{ligneCommandeVar.quantite}">
+							<f:facet name="header">
+								<h:outputText value="Quantite" />
+							</f:facet>
+							<h:outputText value="#{ligneCommandeVar.quantite}" />
+						</p:column>
+
+						<p:column id="prixTotal" filterBy="#{ligneCommandeVar.prixTotal}"
+							headerText="prixTotal" filterMatchMode="contains"
+							sortBy="#{ligneCommandeVar.prixTotal}">
+							<f:facet name="header">
+								<h:outputText value="Prix Total" />
+							</f:facet>
+							<h:outputText value="#{ligneCommandeVar.prixTotal}" />
+						</p:column>
+					</p:dataTable>
+			</center>	
+			
+		</h:form>		
+	</ui:define>
+</ui:composition>

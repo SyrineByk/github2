@@ -1,0 +1,191 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" 
+	template="/templates/template.xhtml">
+	
+	
+	<ui:define name="content">
+		<h:form dir="ltr" id="typeForm">
+			<!-- liste des Type -->
+			<center>
+			<p:dataTable id="typeTable"
+				var="typeVar" 
+				style="width:960px;"
+				value="#{typeBean.typeList}" 
+				widgetVar="typeTable"
+				paginator="true" 
+				rows="4"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="4,8,12,16"
+				>
+				<f:facet name="header">
+					<p:outputPanel>
+						<h:outputText value="Recherche" dir="ltr"/>
+						<p:inputText id="globalFilter" onkeyup="typeTable.filter()"
+							style="width:150px" />
+						<p:commandButton id="addButton"
+							update=":typeForm:typePanelAdd"
+							oncomplete="typeAdd.show()" 
+							icon="ui-icon-add"
+							value="Ajouter"
+							title="Ajouter Type">			
+						</p:commandButton>
+					</p:outputPanel>
+				</f:facet>
+				
+				<p:column id="libelle" filterBy="#{typeVar.libelle}"
+					headerText="libelle" filterMatchMode="contains" 
+					sortBy="#{typeVar.libelle}">
+					<f:facet name="header">  
+			            <h:outputText value="Libellé" />  
+			        </f:facet>
+					<h:outputText value="#{typeVar.libelle}" />
+				</p:column>
+				
+				<p:column id="description" filterBy="#{typeVar.description}"
+					headerText="description" filterMatchMode="contains" sortBy="#{typeVar.description}">
+					<f:facet name="header">  
+			            <h:outputText value="Description" />  
+			        </f:facet>
+					<h:outputText value="#{typeVar.description}" />
+				</p:column>
+				
+				<!-- les boutons consult + Update + Delete -->
+				<p:column style="width:10%" headerText="Actions" exportable="false">
+					<h:panelGrid columns="3">
+						<p:commandButton id="selectButton" style="size:12;"
+							update=":typeForm:typePanelConsult"
+							oncomplete="typeConsult.show()" 
+							value="Afficher"
+							title="Afficher">
+							<f:setPropertyActionListener value="#{typeVar}"
+								target="#{typeBean.selectedTypeDisplay}" />
+						</p:commandButton>
+
+						<p:commandButton id="deleteButton" style="size:12;"
+							update=":typeForm:typePanelRemove" 
+							oncomplete="typeRemove.show()"
+							value="Supprimer" 
+							title="Supprimer">
+							<f:setPropertyActionListener value="#{typeVar}"
+								target="#{typeBean.selectedTypeDelete}" />
+						</p:commandButton>
+
+						<p:commandButton id="updateButton" style="size:12;"
+							update=":typeForm:typePanelUpdate" 
+							oncomplete="typeUpdate.show()"
+							value="Modifier"
+							title="Modifier">
+							<f:setPropertyActionListener value="#{typeVar}"
+								target="#{typeBean.selectedTypeUpdate}" />
+						</p:commandButton>
+						
+					</h:panelGrid>
+				</p:column>								
+			</p:dataTable>
+		</center>	
+		
+		<!-- Type Detail  -->
+			<p:dialog header="Afficher le détail de type" widgetVar="typeConsult"
+				resizable="false" id="typeConsult" showEffect="fade"
+				hideEffect="explode" modal="true">
+				<h:panelGrid columns="2" id="typePanelConsult">
+						
+				    <h:outputLabel value="Libellé :" />
+					<p:inputText id="libelle1" style="width:180px;"
+						value="#{typeBean.selectedTypeDisplay.libelle}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Description :" />
+					<p:inputText id="description1" style="width:180px;"
+						value="#{typeBean.selectedTypeDisplay.description}" disabled="true" readonly="true">
+					</p:inputText>
+									
+			</h:panelGrid>
+			</p:dialog> 
+			
+			<!-- Type remove -->
+			<p:dialog header="Supprimer" widgetVar="typeRemove"
+				resizable="false" id="typeRemove" showEffect="fade"
+				hideEffect="explode" modal="true">
+
+				<h:panelGrid columns="2" id="typePanelRemove">
+					<h:outputLabel value="Libellé :" />
+					<p:inputText id="libelle2" style="width:180px;"
+						value="#{typeBean.selectedTypeDelete.libelle}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Description :" />
+					<p:inputText id="description2" style="width:180px;"
+						value="#{typeBean.selectedTypeDelete.description}" disabled="true" readonly="true">
+					</p:inputText>
+					<f:facet name="footer">
+						<p:spacer height="50px;"></p:spacer>
+						<p:commandButton id="remove" value="Supprimer"
+							action="#{typeBean.deleteType}" type="submit"
+							oncomplete="typeRemove.hide()" />
+						<p:commandButton value="Annuler"
+							oncomplete="typeRemove.hide()" />
+					</f:facet>
+				</h:panelGrid>
+			</p:dialog>			
+
+			<!-- Type update -->
+			<p:dialog header="Mettre à jour" widgetVar="typeUpdate"
+				resizable="false" id="typeUpdate" showEffect="fade"
+				hideEffect="explode" modal="true">
+				<h:panelGrid columns="4" id="typePanelUpdate">
+
+					<h:outputLabel value="Libellé :" />
+					<p:inputText id="libelle3" style="width:180px;"
+						value="#{typeBean.selectedTypeUpdate.libelle}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Description :" />
+					<p:inputText id="description3" style="width:180px;"
+						value="#{typeBean.selectedTypeUpdate.description}" >
+					</p:inputText>
+					<f:facet name="footer">
+						<p:spacer height="50px;"></p:spacer>
+						<p:commandButton id="update" value="Mettre à jour"
+							action="#{typeBean.updateType}" type="submit"
+							oncomplete="typeUpdate.hide()" />
+						<p:commandButton value="Annuler"
+							oncomplete="typeUpdate.hide()" />
+					</f:facet>
+				</h:panelGrid>
+			</p:dialog>	
+					
+			<!-- Type Add -->
+			<p:dialog header="Ajouter Type" widgetVar="typeAdd"
+				resizable="false" id="typeAdd" showEffect="fade"
+				hideEffect="explode" modal="true">
+				<h:panelGrid columns="4" id="typePanelAdd">
+					<h:outputLabel value="Libellé :" />
+					<p:inputText id="libelle4" style="width:180px;"
+						value="#{typeBean.selectedTypeAdd.libelle}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Description :" />
+					<p:inputText id="description4" style="width:180px;"
+						value="#{typeBean.selectedTypeAdd.description}" >
+					</p:inputText>
+					
+					<f:facet name="footer">
+						<p:spacer height="50px;"></p:spacer>
+						
+						<p:commandButton id="add" value="Ajouter"
+							action="#{typeBean.addType}" type="submit"
+							oncomplete="typeAdd.hide()" />
+						<p:commandButton value="Annuler" type="reset"
+							oncomplete="typeAdd.hide()" />
+					</f:facet>
+					
+				</h:panelGrid>
+			</p:dialog>				
+			
+		</h:form>		
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,243 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" 
+	template="/templates/template.xhtml">
+	
+	
+	<ui:define name="content">
+		<h:form dir="ltr" id="utilisateurForm">
+			<!-- liste des Utilisateur -->
+			<center>
+			<p:dataTable id="utilisateurTable"
+				var="utilisateurVar" 
+				style="width:960px;"
+				value="#{utilisateurBean.utilisateurList}" 
+				widgetVar="utilisateurTable"
+				paginator="true" 
+				rows="4"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="4,8,12,16"
+				>
+				<f:facet name="header">
+					<p:outputPanel>
+						<h:outputText value="Recherche" dir="ltr"/>
+						<p:inputText id="globalFilter" onkeyup="utilisateurTable.filter()"
+							style="width:150px" />
+						<p:commandButton id="addButton"
+							update=":utilisateurForm:utilisateurPanelAdd"
+							oncomplete="utilisateurAdd.show()" 
+							icon="ui-icon-add"
+							value="Ajouter"
+							title="Ajouter Utilisateur">			
+						</p:commandButton>
+					</p:outputPanel>
+				</f:facet>
+				
+				<p:column id="nom" filterBy="#{utilisateurVar.nom}"
+					headerText="nom" filterMatchMode="contains" 
+					sortBy="#{utilisateurVar.nom}">
+					<f:facet name="header">  
+			            <h:outputText value="Nom" />  
+			        </f:facet>
+					<h:outputText value="#{utilisateurVar.nom}" />
+				</p:column>
+				
+				<p:column id="prenom" filterBy="#{utilisateurVar.prenom}"
+					headerText="prenom" filterMatchMode="contains" sortBy="#{utilisateurVar.prenom}">
+					<f:facet name="header">  
+			            <h:outputText value="Prénom" />  
+			        </f:facet>
+					<h:outputText value="#{utilisateurVar.prenom}" />
+				</p:column>
+				
+				<!-- les boutons consult + Update + Delete -->
+				<p:column style="width:10%" headerText="Actions" exportable="false">
+					<h:panelGrid columns="3">
+						<p:commandButton id="selectButton" style="size:12;"
+							update=":utilisateurForm:utilisateurPanelConsult"
+							oncomplete="utilisateurConsult.show()" 
+							value="Afficher"
+							title="Afficher">
+							<f:setPropertyActionListener value="#{utilisateurVar}"
+								target="#{utilisateurBean.selectedUtilisateurDisplay}" />
+						</p:commandButton>
+
+						<p:commandButton id="deleteButton" style="size:12;"
+							update=":utilisateurForm:utilisateurPanelRemove" 
+							oncomplete="utilisateurRemove.show()"
+							value="Supprimer" 
+							title="Supprimer">
+							<f:setPropertyActionListener value="#{utilisateurVar}"
+								target="#{utilisateurBean.selectedUtilisateurDelete}" />
+						</p:commandButton>
+
+						<p:commandButton id="updateButton" style="size:12;"
+							update=":utilisateurForm:utilisateurPanelUpdate" 
+							oncomplete="utilisateurUpdate.show()"
+							value="Modifier"
+							title="Modifier">
+							<f:setPropertyActionListener value="#{utilisateurVar}"
+								target="#{utilisateurBean.selectedUtilisateurUpdate}" />
+						</p:commandButton>
+						
+					</h:panelGrid>
+				</p:column>								
+			</p:dataTable>
+		</center>	
+		
+		<!-- Utilisateur Detail  -->
+			<p:dialog header="Afficher le détail de utilisateur" widgetVar="utilisateurConsult"
+				resizable="false" id="utilisateurConsult" showEffect="fade"
+				hideEffect="explode" modal="true">
+				<h:panelGrid columns="2" id="utilisateurPanelConsult">
+						
+				    <h:outputLabel value="Nom :" />
+					<p:inputText id="nom1" style="width:180px;"
+						value="#{utilisateurBean.selectedUtilisateurDisplay.nom}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Prénom :" />
+					<p:inputText id="prenom1" style="width:180px;"
+						value="#{utilisateurBean.selectedUtilisateurDisplay.prenom}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Téléphone 1 :" />
+					<p:inputText id="telephone11" style="width:180px;"
+						value="#{utilisateurBean.selectedUtilisateurDisplay.telephone1}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Téléphone 2 :" />
+					<p:inputText id="telephone21" style="width:180px;"
+						value="#{utilisateurBean.selectedUtilisateurDisplay.telephone2}" disabled="true" readonly="true">
+					</p:inputText>
+									
+			</h:panelGrid>
+			</p:dialog> 
+			
+			<!-- Utilisateur remove -->
+			<p:dialog header="Supprimer" widgetVar="utilisateurRemove"
+				resizable="false" id="utilisateurRemove" showEffect="fade"
+				hideEffect="explode" modal="true">
+
+				<h:panelGrid columns="2" id="utilisateurPanelRemove">
+					<h:outputLabel value="Nom :" />
+					<p:inputText id="nom2" style="width:180px;"
+						value="#{utilisateurBean.selectedUtilisateurDelete.nom}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<h:outputLabel value="Prénom :" />
+					<p:inputText id="prenom2" style="width:180px;"
+						value="#{utilisateurBean.selectedUtilisateurDelete.prenom}" disabled="true" readonly="true">
+					</p:inputText>
+					
+					<f:facet name="footer">
+						<p:spacer height="50px;"></p:spacer>
+						<p:commandButton id="remove" value="Supprimer"
+							action="#{utilisateurBean.deleteUtilisateur}" type="submit"
+							oncomplete="utilisateurRemove.hide()" />
+						<p:commandButton value="Annuler"
+							oncomplete="utilisateurRemove.hide()" />
+					</f:facet>
+				</h:panelGrid>
+			</p:dialog>			
+
+			<!-- Utilisateur update -->
+			<p:dialog header="Mettre à jour" widgetVar="utilisateurUpdate"
+				resizable="false" id="utilisateurUpdate" showEffect="fade"
+				hideEffect="explode" modal="true">
+				<h:panelGrid columns="4" id="utilisateurPanelUpdate">
+
+					<h:outputLabel value="Nom :" />
+					<p:inputText id="nom3" style="width:180px;"
+						value="#{utilisateurBean.selectedUtilisateurUpdate.nom}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Prénom :" />
+					<p:inputText id="prenom3" style="width:180px;"
+						value="#{utilisateurBean.selectedUtilisateurUpdate.prenom}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Login :" />
+					<p:inputText id="login3" style="width:180px;"
+						value="#{utilisateurBean.selectedUtilisateurUpdate.login}" >
+					</p:inputText>
+				    
+				    <h:outputLabel value="Mot de passe :" />
+					<p:password id="motPasse3" style="width:180px;"
+						value="#{utilisateurBean.selectedUtilisateurUpdate.motPasse}">
+					</p:password>
+					
+					<h:outputLabel value="Téléphone 1 :" />
+					<p:inputText id="telephone13" style="width:180px;"
+						value="#{utilisateurBean.selectedUtilisateurUpdate.telephone1}">
+					</p:inputText>
+					
+					<h:outputLabel value="Téléphone 2 :" />
+					<p:inputText id="telephone23" style="width:180px;"
+						value="#{utilisateurBean.selectedUtilisateurUpdate.telephone2}">
+					</p:inputText>
+					
+					<f:facet name="footer">
+						<p:spacer height="50px;"></p:spacer>
+						<p:commandButton id="update" value="Mettre à jour"
+							action="#{utilisateurBean.updateUtilisateur}" type="submit"
+							oncomplete="utilisateurUpdate.hide()" />
+						<p:commandButton value="Annuler"
+							oncomplete="utilisateurUpdate.hide()" />
+					</f:facet>
+				</h:panelGrid>
+			</p:dialog>	
+					
+			<!-- Utilisateur Add -->
+			<p:dialog header="Ajouter Utilisateur" widgetVar="utilisateurAdd"
+				resizable="false" id="utilisateurAdd" showEffect="fade"
+				hideEffect="explode" modal="true">
+				<h:panelGrid columns="4" id="utilisateurPanelAdd">
+
+					<h:outputLabel value="Nom :" />
+					<p:inputText id="nom4" style="width:180px;"
+						value="#{utilisateurBean.selectedUtilisateurAdd.nom}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Prénom :" />
+					<p:inputText id="prenom4" style="width:180px;"
+						value="#{utilisateurBean.selectedUtilisateurAdd.prenom}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Login :" />
+					<p:inputText id="login4" style="width:180px;"
+						value="#{utilisateurBean.selectedUtilisateurAdd.login}" >
+					</p:inputText>
+					
+					<h:outputLabel value="Mot de passe :" />
+					<p:password id="motPasse4" style="width:180px;"
+						value="#{utilisateurBean.selectedUtilisateurAdd.motPasse}">
+					</p:password>
+					
+					<h:outputLabel value="Téléphone 1 :" />
+					<p:inputText id="telephone14" style="width:180px;"
+						value="#{utilisateurBean.selectedUtilisateurAdd.telephone1}">
+					</p:inputText>
+					
+					<h:outputLabel value="Téléphone 2 :" />
+					<p:inputText id="telephone24" style="width:180px;"
+						value="#{utilisateurBean.selectedUtilisateurAdd.telephone2}">
+					</p:inputText>
+					<f:facet name="footer">
+						<p:spacer height="50px;"></p:spacer>
+						
+						<p:commandButton id="add" value="Ajouter"
+							action="#{utilisateurBean.addUtilisateur}" type="submit"
+							oncomplete="utilisateurAdd.hide()" />
+						<p:commandButton value="Annuler" type="reset"
+							oncomplete="utilisateurAdd.hide()" />
+					</f:facet>
+					
+				</h:panelGrid>
+			</p:dialog>				
+			
+		</h:form>		
+	</ui:define>
+</ui:composition>

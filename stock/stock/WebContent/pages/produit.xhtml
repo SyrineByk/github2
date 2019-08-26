@@ -1,0 +1,223 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" 
+	template="/templates/template.xhtml">
+	
+	
+	<ui:define name="content">
+		<h:form dir="ltr" id="produitForm">		
+						
+			<!-- liste des Produit -->
+			<center>
+			<p:dataTable id="produitTable"
+				var="produitVar" 
+				style="width:960px;"
+				value="#{produitBean.produitList}" 
+				widgetVar="produitTable"
+				paginator="true" 
+				rows="4"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="4,8,12,16"
+				>
+				<f:facet name="header">
+					<p:outputPanel>
+						<h:outputText value="Recherche" />
+						<p:inputText id="globalFilter" onkeyup="produitTable.filter()"
+							style="width:150px" />
+						<p:commandButton id="addButton"
+							update=":produitForm:produitPanelAdd"
+							oncomplete="produitAdd.show()" 
+							icon="ui-icon-add"
+							value="Ajouter"
+							title="Ajouter Produit">			
+						</p:commandButton>
+					</p:outputPanel>
+				</f:facet>
+				
+				<p:column id="categorie" filterBy="#{produitVar.categorie.libelle}"
+					headerText="categorie" filterMatchMode="contains" 
+					sortBy="#{produitVar.categorie.libelle}">
+					<f:facet name="header">  
+			            <h:outputText value="Categorie" />  
+			        </f:facet>
+					<h:outputText value="#{produitVar.categorie.libelle}" />
+				</p:column>
+			
+				<p:column id="libelle" filterBy="#{produitVar.libelle}"
+					headerText="libelle" filterMatchMode="contains" 
+					sortBy="#{produitVar.libelle}">
+					<f:facet name="header">  
+			            <h:outputText value="Produit" />  
+			        </f:facet>
+					<h:outputText value="#{produitVar.libelle}" />
+				</p:column>
+				
+				<!-- les boutons consult + Update + Delete -->
+				<p:column style="width:10%" headerText="Actions" exportable="false">
+					<h:panelGrid columns="3">
+						
+						<p:commandButton id="selectButton"
+							update=":produitForm:produitPanelConsult"
+							oncomplete="produitConsult.show()" 
+							value="Afficher"
+							title="Afficher">
+							<f:setPropertyActionListener value="#{produitVar}"
+								target="#{produitBean.selectedProduitDisplay}" />
+						</p:commandButton>
+
+						<p:commandButton id="deleteButton"
+							update=":produitForm:produitPanelRemove" 
+							oncomplete="produitRemove.show()"
+							value="Supprimer" 
+							title="Supprimer">
+							<f:setPropertyActionListener value="#{produitVar}"
+								target="#{produitBean.selectedProduitDelete}" />
+						</p:commandButton>
+
+						<p:commandButton id="updateButton"
+							update=":produitForm:produitPanelUpdate" 
+							oncomplete="produitUpdate.show()"
+							value="Modifier"
+							title="Modifier">
+							<f:setPropertyActionListener value="#{produitVar}"
+								target="#{produitBean.selectedProduitUpdate}" />
+						</p:commandButton>
+						
+					</h:panelGrid>
+				</p:column>								
+			</p:dataTable>
+		</center>	
+		
+		<!-- Produit Detail  -->
+			<p:dialog header="Afficher le détail de produit" widgetVar="produitConsult"
+				resizable="false" id="produitConsult" showEffect="fade"
+				hideEffect="explode" modal="true">
+				<h:panelGrid columns="2" id="produitPanelConsult">
+						
+						    <h:outputLabel value="Categorie :" />
+							<p:inputText id="categorie1"
+								value="#{produitBean.selectedProduitDisplay.categorie.libelle}" disabled="true" readonly="true">
+							</p:inputText>
+							
+							<h:outputLabel value="Libellée :" />
+							<p:inputText id="libelle1"
+								value="#{produitBean.selectedProduitDisplay.libelle}" disabled="true" readonly="true">
+							</p:inputText>
+							
+							<h:outputLabel value="Desription :" />
+							<p:inputText id="description1"
+								value="#{produitBean.selectedProduitDisplay.description}" disabled="true" readonly="true">
+							</p:inputText>
+							
+						</h:panelGrid>
+			</p:dialog> 
+			
+			<!-- Produit remove -->
+			<p:dialog header="Supprimer" widgetVar="produitRemove"
+				resizable="false" id="produitRemove" showEffect="fade"
+				hideEffect="explode" modal="true">
+
+				<h:panelGrid columns="2" id="produitPanelRemove">
+							<h:outputLabel value="Categorie :" />
+							<p:inputText id="categorie2"
+								value="#{produitBean.selectedProduitDelete.categorie.libelle}" disabled="true" readonly="true">
+							</p:inputText>
+							
+							<h:outputLabel value="Libellée :" />
+							<p:inputText id="libelle2"
+								value="#{produitBean.selectedProduitDelete.libelle}" disabled="true" readonly="true">
+							</p:inputText>
+							
+							<h:outputLabel value="Desription :" />
+							<p:inputText id="description2"
+								value="#{produitBean.selectedProduitDelete.description}" disabled="true" readonly="true">
+							</p:inputText>
+												
+					<f:facet name="footer">
+						<p:spacer height="50px;"></p:spacer>
+						<p:commandButton id="remove" value="Supprimer"
+							action="#{produitBean.deleteProduit}" type="submit"
+							oncomplete="produitRemove.hide()" />
+						<p:commandButton value="Annuler"
+							oncomplete="produitRemove.hide()" />
+					</f:facet>
+				</h:panelGrid>
+			</p:dialog>			
+
+			<!-- Produit update -->
+			<p:dialog header="Mettre à jour" widgetVar="produitUpdate"
+				resizable="false" id="produitUpdate" showEffect="fade"
+				hideEffect="explode" modal="true">
+				<h:panelGrid columns="2" id="produitPanelUpdate">
+							<h:outputLabel value="Categorie :" />
+							<p:selectOneMenu id="categorie3"
+								value="#{produitBean.idCategorieUpdate}"  filterMatchMode="contains" style="width:190px;">
+								<f:selectItem itemLabel="" itemValue=""/>
+								<f:selectItems  value="#{categorieBean.categorieList}"
+								var="categorie" itemLabel="#{categorie.libelle}" 	itemValue="#{categorie.idCategorie}" />								
+							</p:selectOneMenu>
+							
+							<h:outputLabel value="Libellée :" />
+							<p:inputText id="libelle3"
+								value="#{produitBean.selectedProduitUpdate.libelle}" >
+							</p:inputText>
+							
+							<h:outputLabel value="Desription :" />
+							<p:inputText id="description3"
+								value="#{produitBean.selectedProduitUpdate.description}" >
+							</p:inputText>
+							
+					<f:facet name="footer">
+						<p:spacer height="50px;"></p:spacer>
+						<p:commandButton id="update" value="Mettre à jour"
+							action="#{produitBean.updateProduit}" type="submit"
+							oncomplete="produitUpdate.hide()" />
+						<p:commandButton value="Annuler"
+							oncomplete="produitUpdate.hide()" />
+					</f:facet>
+				</h:panelGrid>
+			</p:dialog>	
+					
+			<!-- Produit Add -->
+			<p:dialog header="Ajouter Produit" widgetVar="produitAdd"
+				resizable="false" id="produitAdd" showEffect="fade"
+				hideEffect="explode" modal="true">
+				<h:panelGrid columns="2" id="produitPanelAdd">
+
+							<h:outputLabel value="Categorie :" />
+							<p:selectOneMenu id="categorie4"
+								value="#{produitBean.idCategorieAdd}"  filterMatchMode="contains" style="width:190px;">
+								<f:selectItem itemLabel="" itemValue=""/>
+								<f:selectItems  value="#{categorieBean.categorieList}"
+								var="categorie" itemLabel="#{categorie.libelle}" 	itemValue="#{categorie.idCategorie}" />								
+							</p:selectOneMenu>
+						
+							
+							<h:outputLabel value="Libellée :" />
+							<p:inputText id="libelle4"
+								value="#{produitBean.selectedProduitAdd.libelle}" >
+							</p:inputText>
+							
+							<h:outputLabel value="Desription :" />
+							<p:inputText id="description4"
+								value="#{produitBean.selectedProduitAdd.description}" >
+							</p:inputText>
+							
+					<f:facet name="footer">
+						<p:spacer height="50px;"></p:spacer>
+						
+						<p:commandButton id="add" value="Ajouter"
+							action="#{produitBean.addProduit}" type="submit"
+							oncomplete="produitAdd.hide()" />
+						<p:commandButton value="Annuler" type="reset"
+							oncomplete="produitAdd.hide()" />
+					</f:facet>
+					
+				</h:panelGrid>
+			</p:dialog>				
+			
+		</h:form>		
+	</ui:define>
+</ui:composition>
